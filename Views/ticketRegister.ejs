@@ -1,0 +1,15 @@
+<%- include('partials/head') %>
+
+<div class="rapper">
+
+<h1>Register a ticket!</h1>
+
+
+<form action="/auth/ticketregister" method="POST">
+    <input type="text" name="name" placeholder="Title">
+    <textarea type="text" name="description" placeholder="Description"></textarea>
+    <input type="submit" name="ticketRegistrer" id="Register ticket">
+</form>
+</div>
+
+<%- include('partials/foot') %>
