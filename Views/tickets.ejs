@@ -1,0 +1,72 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<h1>Support Tickets</h1>
+
+<div class="ticket-list">
+  <% tickets.forEach(ticket => { %>
+    <div class="ticket-item">
+      <div class="ticket-header">
+        <h3 class="ticket-title"><%= ticket.name %></h3>
+      </div>
+      
+      <div class="ticket-meta">
+        <em><%= ticket.category %> Issue</em>
+        <em><%= ticket.status %></em>
+        <em><%= ticket.priority %></em>
+      </div>
+      
+      <div class="ticket-description">
+        <strong>Description</strong>
+        <p><%= ticket.description %></p>
+      </div>
+      
+      <div class="ticket-user">
+        <strong>User: </strong><em><%= ticket.ownerName %></em>
+      </div>
+      
+      <div class="ticket-answer-section">
+        <strong>Answer: </strong>
+        <% if (ticket.answer == "" || !ticket.answer) { %>
+          <span class="no-answer">Not Answered</span>
+        <% } else { %>
+          <div class="ticket-answer">
+            <%= ticket.answer %> - <em><%= ticket.answerer %></em>
+          </div>
+        <% } %>
+      </div>
+      
+      <% if (role === "Admin") { %>
+        <!-- Toggle button will be inserted by JavaScript just before the form -->
+        <form action="/auth/answerTicket/<%= ticket._id %>" method="POST">
+          <textarea type="text" name="answer" placeholder="Write an Answer"></textarea>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="drippydrop">Status:</label>
+              <select name="status" id="drippydrop">
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Solved">Solved</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="drippydrup">Priority:</label>
+              <select name="priority" id="drippydrup">
+                <option value="No Priority">No Priority</option>
+                <option value="Low Priority">Low Priority</option>
+                <option value="Medium Priority">Medium Priority</option>
+                <option value="High Priority">High Priority</option>
+              </select>
+            </div>
+          </div>
+          
+          <input type="submit" name="answerTicket" id="Register ticket" value="Submit Answer">
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('partials/foot') %>

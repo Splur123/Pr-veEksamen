@@ -1,5 +1,15 @@
 <%- include('partials/head') %>
+<%- include('partials/navbar') %>
 
-<h1>My User!</h1>
+    <h1>My User!</h1>
+
+    <% if (currentUser) { %>
+      <p><strong>Name:</strong> <%= currentUser.name %></p>
+      <p><strong>Email:</strong> <%= currentUser.email %></p>
+      <p><strong>Role:</strong> <%= currentUser.role %></p>
+    <% } else { %>
+      <p>Could not load user info.</p>
+    <% } %>
+    
 
 <%- include('partials/foot') %>

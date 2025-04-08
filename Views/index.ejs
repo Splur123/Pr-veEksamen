@@ -1,34 +1,19 @@
 <%- include('partials/head') %>
+<%- include('partials/navbar') %>
 
-<div class="navbar">
+<h1> Welcome to Supportlot!</h1>
 
-<% if (loggedIn) { %>
-    <a href="/auth/user">My User</a>
-<br>
-    <a href="/auth/logout">Log Out</a>
-
-<% } else { %>
-    <a href="/auth/register">Register</a>
-    <br>
-    <a href="/auth/login">Log In</a>
-
-<% } %>
-<h3>Supportlot!</h3>
-</div>
-
-<div class="rapper">
-
-<h1> Welcome to Supportlot</h1>
-
-<% if (loggedIn) { %>
+<% if (loggedIn) { 
+    console.log(role)%>
     <a href="/auth/ticketRegister">Register a Ticket</a>
-
+    <% if (role === "Admin") { %>
+        <br>
+        <a href="/auth/admin">Admin Dashboard</a>
+        <% } %>
 <% } else { %>
     <a href="/auth/register">Register</a>
 <br>
     <a href="/auth/login">Log In</a>
 <% } %>
-
-</div>
 
 <%- include('partials/foot') %>

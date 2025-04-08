@@ -1,15 +1,13 @@
 <%- include('partials/head') %>
 
-<div class="rapper">
-
 <h1>Login!</h1>
 
 <form action="/auth/login" method="POST">
     <input type="email" name="email" placeholder="E-mail">
     <input type="password" name="password" placeholder="Password">
-    <input type="submit" name="login" id="Login">
+    <input type="submit" name="login" id="Login" value="Log In">
 </form>
 
-</div>
+<a href="/auth/register">Don't have an account?</a>
 
 <%- include('partials/foot') %>

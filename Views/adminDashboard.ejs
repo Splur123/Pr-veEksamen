@@ -1,0 +1,21 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<h1>Welcome to the Admin Dashboard!</h1>
+
+<div class="dashboard-stats">
+    <div class="status-box">
+        <h3>Open</h3>
+        <p><%= open %> Tickets</p>
+    </div>
+    <div class="status-box">
+        <h3>In Progress</h3>
+        <p><%= inProgress %> Tickets</p>
+    </div>
+    <div class="status-box">
+        <h3>Solved</h3>
+        <p><%= solved %> Tickets</p>
+    </div>
+</div>
+
+<%- include('partials/foot') %>

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -14,13 +15,14 @@ app.use(express.static(path.join(__dirname, 'Public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: 'your_secret_key', // change this to something secure!
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // set true if using HTTPS
+    cookie: { secure: false }
   }));
   app.use((req, res, next) => {
     res.locals.loggedIn = !!req.session.userId;
+    res.locals.role = req.session.role;
     next();
 });
 app.use('/auth', authRoutes);
@@ -30,8 +32,8 @@ app.get('/', (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 4200;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
-    console.log('Server arghing on ' + PORT);
-    connectDB('mongodb://localhost:27017/StøtteDatabase');
+    console.log('Server arghing on port ' + PORT);
+    connectDB(process.env.MONGODB_URI);
 });

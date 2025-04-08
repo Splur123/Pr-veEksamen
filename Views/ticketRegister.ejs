@@ -1,6 +1,5 @@
 <%- include('partials/head') %>
-
-<div class="rapper">
+<%- include('partials/navbar') %>
 
 <h1>Register a ticket!</h1>
 
@@ -8,8 +7,15 @@
 <form action="/auth/ticketregister" method="POST">
     <input type="text" name="name" placeholder="Title">
     <textarea type="text" name="description" placeholder="Description"></textarea>
-    <input type="submit" name="ticketRegistrer" id="Register ticket">
+    <label for="category"></label>
+    <select name="category" id="droppydrip">
+        <option value="Hardware">Hardware Issue</option>
+        <option value="Software">Software Issue</option>
+        <option value="Network">Network Issue</option>
+        <option value="Account">Account Issue</option>
+        <option value="Other">Other</option>
+    </select>
+    <input type="submit" name="ticketRegister" id="Register ticket" value="Register Ticket">
 </form>
-</div>
 
 <%- include('partials/foot') %>

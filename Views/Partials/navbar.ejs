@@ -1,0 +1,19 @@
+<% if (loggedIn) { %>
+<div class="navbar">
+
+    <a href="/auth/user">My User</a>
+    <br>
+    <% if (role === "Admin") { %>
+        <a href="/auth/tickets">Registered Tickets</a>
+        <br>
+        <a href="/auth/admin">Admin Dashboard</a>
+    <% } else { %>
+    <a href="/auth/tickets">My Tickets</a>  
+    <% } %>
+    <br>
+    <a href="/auth/logout">Log Out</a>
+
+<a href="/"><h3>Supportlot</h3></a>
+
+</div>
+<% } %>
