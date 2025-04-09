@@ -20,7 +20,7 @@ router.post('/ticketregister', authController.ticketRegister);
 router.post('/answerTicket/:id', authController.answerTicket);
 router.post('/deleteTicket/:id', authController.deleteTicket);
 router.post('/faqSubmit', authController.faqSubmit);
-router.post('/updateFaq', authController.updateFaq);
-router.post('/deleteFaq', authController.deleteFaq);
+router.post('/updateFaq/:id', authController.updateFaq);
+router.post('/deleteFaq/:id', authController.deleteFaq);
 
 module.exports = router;

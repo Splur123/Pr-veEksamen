@@ -253,13 +253,23 @@ const authController = {
 
             try {
 
+                if (req.body.answer != "" || null) {
+
                     await faq.findByIdAndUpdate(faqId, {
                         question: req.body.question,
-                        answer: req.body.question,
+                        answer: req.body.answer,
+                        answered: false
+                    })
+                }
+                else {
+                        await faq.findByIdAndUpdate(faqId, {
+                            question: req.body.question,
+                            answer: req.body.answer,
+                            answered: true
                     })
                     res.redirect('/auth/faq');
                 }
-
+            }
             catch (error) {
                     console.log(error);
                 }

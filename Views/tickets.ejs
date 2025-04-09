@@ -1,4 +1,19 @@
 <%- include('partials/head') %>
+<head>
+  <script>
+  function toggleReadMore(button) {
+    const container = button.closest('.ticket-description');
+    const shortText = container.querySelector('.short-text');
+    const fullText = container.querySelector('.full-text');
+
+    const isExpanded = fullText.style.display === 'block';
+
+    shortText.style.display = isExpanded ? 'block' : 'none';
+    fullText.style.display = isExpanded ? 'none' : 'block';
+    button.textContent = isExpanded ? 'Read more' : 'Read less';
+  }
+</script>
+</head>
 <%- include('partials/navbar') %>
 
 <h1>Support Tickets</h1>
@@ -38,7 +53,13 @@
       
       <div class="ticket-description">
         <strong>Description</strong>
-        <p><%= ticket.description %></p>
+        <div class="ticket-description">
+          <p class="short-text"><%= ticket.description.slice(0, 200) %>...</p>
+          <p class="full-text" style="display: none;"><%= ticket.description %></p>
+          <% if (ticket.description.length > 200) { %>
+            <button class="toggle-btn" onclick="toggleReadMore(this)">Read more</button>
+          <% } %>
+        </div>
       </div>
       
       <div class="ticket-user">
@@ -51,7 +72,11 @@
           <span class="no-answer">Not Answered</span>
         <% } else { %>
           <div class="ticket-answer">
-            <%= ticket.answer %> - <em><%= ticket.answerer %></em>
+              <p class="short-text"><%= ticket.answer.slice(0, 200) %>...</p>
+              <p class="full-text" style="display: none;"><%= ticket.answer %></p>
+              <% if (ticket.answer.length > 200) { %>
+                <button class="toggle-btn" onclick="toggleReadMore(this)">Read more</button>
+              <% } %>
           </div>
         <% } %>
       </div>

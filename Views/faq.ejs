@@ -1,4 +1,19 @@
 <%- include('partials/head') %>
+<head>
+  <script>
+  function toggleReadMore(button) {
+    const container = button.closest('.faq-answer');
+    const shortText = container.querySelector('.short-text');
+    const fullText = container.querySelector('.full-text');
+
+    const isExpanded = fullText.style.display === 'block';
+
+    shortText.style.display = isExpanded ? 'block' : 'none';
+    fullText.style.display = isExpanded ? 'none' : 'block';
+    button.textContent = isExpanded ? 'Read more' : 'Read less';
+  }
+</script>
+</head>
 <%- include('partials/navbar') %>
 
 <h1>Frequently Asked Questions</h1>
@@ -23,7 +38,13 @@
         <% if (faq.answer == "" || !faq.answer) { %>
           <span class="no-answer">Not Answered</span>
         <% } else { %>
-        <p><%= faq.answer %></p>
+          <div class="faq-answer">
+            <p class="short-text"><%= faq.answer.slice(0, 300) %>...</p>
+            <p class="full-text" style="display: none;"><%= faq.answer %></p>
+            <% if (faq.answer.length > 200) { %>
+              <button class="toggle-btn" onclick="toggleReadMore(this)">Read more</button>
+            <% } %>
+          </div>
         <% } %>
       </div>
       
