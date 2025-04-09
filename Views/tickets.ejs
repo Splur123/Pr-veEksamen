@@ -30,6 +30,7 @@
   
   <select name="priority" id="priority">
     <option value="" <%= !selectedFilters.priority ? "selected" : "" %>>All</option>
+    <option value="No Priority" <%= selectedFilters.priority === "No Priority" ? "selected" : "" %>>No Priority</option>
     <option value="Low Priority" <%= selectedFilters.priority === "Low Priority" ? "selected" : "" %>>Low</option>
     <option value="Medium Priority" <%= selectedFilters.priority === "Medium Priority" ? "selected" : "" %>>Medium</option>
     <option value="High Priority" <%= selectedFilters.priority === "High Priority" ? "selected" : "" %>>High</option>
@@ -72,11 +73,7 @@
           <span class="no-answer">Not Answered</span>
         <% } else { %>
           <div class="ticket-answer">
-              <p class="short-text"><%= ticket.answer.slice(0, 200) %>...</p>
-              <p class="full-text" style="display: none;"><%= ticket.answer %></p>
-              <% if (ticket.answer.length > 200) { %>
-                <button class="toggle-btn" onclick="toggleReadMore(this)">Read more</button>
-              <% } %>
+              <%= ticket.answer %> - <%= ticket.answerer %>
           </div>
         <% } %>
       </div>
@@ -88,7 +85,7 @@
           </form>
         <% } %>
         <form action="/auth/answerTicket/<%= ticket._id %>" method="POST">
-          <textarea type="text" name="answer" placeholder="Write an Answer"></textarea>
+          <textarea type="text" name="answer" placeholder="Write an Answer"><%= ticket.answer %></textarea>
           
           <div class="form-row">
             <div class="form-group">

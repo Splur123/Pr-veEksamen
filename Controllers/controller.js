@@ -111,11 +111,11 @@ const authController = {
                         answer: "",
                         category: req.body.category,
                         status: "Open",
-                        priority: "None",
+                        priority: "No Priority",
                         ownerId: req.session.userId,
                         ownerName: currentUser.name
                     })
-                    res.redirect('/');
+                    res.redirect('/auth/tickets');
                 }
 
             catch (error) {
@@ -155,9 +155,9 @@ const authController = {
           
             try {
               await ticket.findByIdAndUpdate(ticketId, {
-                answer: req.bodyanswer,
-                status: req.bodystatus,
-                priority: req.bodypriority,
+                answer: req.body.answer,
+                status: req.body.status,
+                priority: req.body.priority,
                 answerer: currentUser.name
               });
           
