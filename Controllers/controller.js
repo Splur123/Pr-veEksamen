@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const user = require('../Models/user');
 const ticket = require('../Models/ticket');
+const faq = require("../Models/faq");
 const { receiveMessageOnPort } = require('worker_threads');
 const { userInfo } = require('os');
 
@@ -68,6 +69,8 @@ const authController = {
             try {
             if ( await bcrypt.compare(req.body.password, existingUser.password)){
                 req.session.userId = existingUser._id;
+                //req.session.role = existingUser.role;
+                req.session.user = existingUser;
                 req.session.role = existingUser.role;
                 console.log("successfully logged in");
                 res.redirect('/');
@@ -107,7 +110,7 @@ const authController = {
                         description: req.body.description,
                         answer: "",
                         category: req.body.category,
-                        status: "Not Started",
+                        status: "Open",
                         priority: "None",
                         ownerId: req.session.userId,
                         ownerName: currentUser.name
@@ -122,35 +125,39 @@ const authController = {
 
         renderTickets: async (req, res) => {
             try {
-                const currentUser = await user.findById(req.session.userId);
-        
-                if (!currentUser) {
-                    return res.status(404).send("User not found.");
-                }
-        
-                const allTickets = await ticket.find();
-        
-                const visibleTickets = currentUser.role === 'Admin'
-                    ? allTickets
-                    : allTickets.filter(t => t.ownerId?.toString() === req.session.userId);
-        
-                res.render('tickets', { tickets: visibleTickets, currentUser });
+              const { status, priority } = req.query;
+              const currentUser = await user.findById(req.session.userId);
+          
+              if (!currentUser) return res.status(404).send("User not found.");
+          
+              let query = {};
+              if (status) query.status = status;
+              if (priority) query.priority = priority;
+              if (currentUser.role !== 'Admin') query.ownerId = req.session.userId;
+          
+              const filteredTickets = await ticket.find(query).sort({ createdAt: -1 });;
+          
+              res.render('tickets', {
+                tickets: filteredTickets,
+                currentUser,
+                role: currentUser.role,
+                selectedFilters: { status, priority }
+              });
             } catch (error) {
-                console.error(error);
-                res.status(500).send('Server error.');
+              console.error(error);
+              res.status(500).send('Server error.');
             }
-        },
+          },
 
         answerTicket: async (req, res) => {
             const ticketId = req.params.id;
-            const { answer, status, priority } = req.body;
             const currentUser = await user.findById(req.session.userId);
           
             try {
               await ticket.findByIdAndUpdate(ticketId, {
-                answer: answer,
-                status: status,
-                priority: priority,
+                answer: req.bodyanswer,
+                status: req.bodystatus,
+                priority: req.bodypriority,
                 answerer: currentUser.name
               });
           
@@ -158,6 +165,19 @@ const authController = {
             } catch (err) {
               console.error('Error answering ticket:', err);
               res.status(500).send('Something went wrong while answering the ticket.');
+            }
+          },
+
+          deleteTicket: async (req, res) => {
+            const ticketId = req.params.id;
+          
+            try {
+                await ticket.deleteOne({ _id: ticketId });
+          
+              res.redirect('/auth/tickets');
+            } catch (err) {
+              console.error('Error deleting ticket:', err);
+              res.status(500).send('Something went wrong while deleting the ticket.');
             }
           },
 
@@ -181,6 +201,86 @@ const authController = {
             res.status(500).send("Error fetching ticket data");
         }
         },
+
+        renderFaq: async (req, res) => {
+            try {
+                
+                const role = req.session.user?.role || "User";
+                let faqs;
+            
+                if (role === "Admin") {
+                  faqs = await faq.find().sort({ createdAt: -1 });
+                } else {
+                  faqs = await faq.find({ answered: true }).sort({ createdAt: -1 });
+                }
+            
+                res.render("faq", { faqs, role });
+              } catch (err) {
+                console.error("Error rendering FAQ page:", err);
+                res.status(500).send("Internal Server Error");
+              }
+        },
+
+        faqSubmit: async (req, res) => {
+
+            try {
+                if (req.body.answer != "" || null) {
+                
+                    await faq.create({
+                        question: req.body.question,
+                        answer: req.body.answer,
+                        answered: true
+                    })
+                }
+                else {
+                    await faq.create({
+                        question: req.body.question,
+                        answer: req.body.answer,
+                        answered: false
+                })
+            }
+                    res.redirect('/auth/faq');
+                }
+
+            catch (error) {
+                    console.log(error);
+                }
+        },
+
+        updateFaq: async (req, res) => {
+
+            const faqId = req.params.id;
+
+            try {
+
+                    await faq.findByIdAndUpdate(faqId, {
+                        question: req.body.question,
+                        answer: req.body.question,
+                    })
+                    res.redirect('/auth/faq');
+                }
+
+            catch (error) {
+                    console.log(error);
+                }
+        },
+
+        deleteFaq: async (req, res) => {
+            const faqId = req.params.id;
+          
+            try {
+                await faq.deleteOne({ _id: faqId });
+          
+              res.redirect('/auth/faq');
+            } catch (err) {
+              console.error('Error deleting faq:', err);
+              res.status(500).send('Something went wrong while deleting the faq.');
+            }
+          },
+
+          renderManual: async (req, res) => {
+            res.render('manual')
+          },
 
         requireLogin (req, res, next) {
             if (!req.session.userId) {

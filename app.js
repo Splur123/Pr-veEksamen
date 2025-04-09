@@ -21,8 +21,12 @@ app.use(session({
     cookie: { secure: false }
   }));
   app.use((req, res, next) => {
+    // res.locals.loggedIn = !!req.session.userId;
+    // res.locals.role = req.session.user?.role
+    // res.locals.user = req.session.user
     res.locals.loggedIn = !!req.session.userId;
-    res.locals.role = req.session.role;
+    res.locals.role = req.session.user?.role
+    res.locals.user = req.session.user
     next();
 });
 app.use('/auth', authRoutes);

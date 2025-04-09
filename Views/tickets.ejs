@@ -2,6 +2,26 @@
 <%- include('partials/navbar') %>
 
 <h1>Support Tickets</h1>
+<a href="/auth/ticketRegister">Register a Ticket</a>
+
+<form method="GET" action="/auth/tickets" class="filter-form">
+  <label for="status">Status:</label>
+  <select name="status" id="status">
+    <option value="" <%= !selectedFilters.status ? "selected" : "" %>>All</option>
+    <option value="Open" <%= selectedFilters.status === "Open" ? "selected" : "" %>>Open</option>
+    <option value="In Progress" <%= selectedFilters.status === "In Progress" ? "selected" : "" %>>In Progress</option>
+    <option value="Solved" <%= selectedFilters.status === "Solved" ? "selected" : "" %>>Solved</option>
+  </select>
+  
+  <select name="priority" id="priority">
+    <option value="" <%= !selectedFilters.priority ? "selected" : "" %>>All</option>
+    <option value="Low Priority" <%= selectedFilters.priority === "Low Priority" ? "selected" : "" %>>Low</option>
+    <option value="Medium Priority" <%= selectedFilters.priority === "Medium Priority" ? "selected" : "" %>>Medium</option>
+    <option value="High Priority" <%= selectedFilters.priority === "High Priority" ? "selected" : "" %>>High</option>
+  </select>
+
+  <button type="submit">Filter</button>
+</form>
 
 <div class="ticket-list">
   <% tickets.forEach(ticket => { %>
@@ -37,7 +57,11 @@
       </div>
       
       <% if (role === "Admin") { %>
-        <!-- Toggle button will be inserted by JavaScript just before the form -->
+        <% if (ticket.status === "Solved") { %>
+          <form action="/auth/deleteTicket/<%= ticket._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this ticket?');">
+            <input type="submit" value="Delete Ticket">
+          </form>
+        <% } %>
         <form action="/auth/answerTicket/<%= ticket._id %>" method="POST">
           <textarea type="text" name="answer" placeholder="Write an Answer"></textarea>
           
@@ -61,8 +85,8 @@
               </select>
             </div>
           </div>
-          
-          <input type="submit" name="answerTicket" id="Register ticket" value="Submit Answer">
+
+          <input type="submit" name="answerTicket" id="Answer ticket" value="Submit Answer">
         </form>
       <% } %>
     </div>

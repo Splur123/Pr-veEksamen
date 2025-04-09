@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema(
     password: {type: String, required: true},
     role: {type: String, required: true},
     tickets: Array
-});
+}, {
+    timestamps: true
+  });
 
 // encrypt before saving
 userSchema.pre('save', async function(next){

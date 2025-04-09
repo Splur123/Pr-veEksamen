@@ -1,0 +1,44 @@
+<%- include('partials/head') %>
+<%- include('partials/navbar') %>
+
+<h1>Frequently Asked Questions</h1>
+
+<% if (role === "Admin") { %>
+  <h3>Answer a frequently asked question</h3>
+<form action="/auth/faqSubmit" method="POST">
+  <input type="text" name="question" placeholder="Question">
+  <textarea type="text" name="answer" placeholder="Answer"></textarea>
+  <input type="submit" name="faqSubmit" id="Submit Answer" value="Submit Answer">
+</form>
+<% } %>
+
+<div class="faq-list">
+  <% faqs.forEach(faq => { %>
+    <div class="faq-item">
+      <div class="faq-header">
+        <h3 class="faq-title"><%= faq.question %></h3>
+      </div>
+      
+      <div class="faq-answer">
+        <% if (faq.answer == "" || !faq.answer) { %>
+          <span class="no-answer">Not Answered</span>
+        <% } else { %>
+        <p><%= faq.answer %></p>
+        <% } %>
+      </div>
+      
+      <% if (role === "Admin") { %>
+        <form action="/auth/deleteFaq/<%= faq._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this FAQ?');">
+          <input type="submit" value="Delete Answer">
+        </form>
+
+        <form action="/auth/updateFaq/<%= faq._id %>" method="POST">
+          <textarea name="answer" placeholder="Write an Answer"><%= faq.answer %></textarea>
+          <input type="submit" value="Update Answer">
+        </form>
+      <% } %>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('partials/foot') %>
